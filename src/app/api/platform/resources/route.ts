@@ -76,7 +76,7 @@ export async function POST(request: Request) {
 export async function PATCH(request: Request) {
   try {
     if (!originOK(request)) return bad("طلب غير صالح.", 403);
-    if (!await verifyPlatformOwner()) return bad("غير مصرح.", 401);
+    const actor = await verifyPlatformOwner(); if (!actor) return bad("غير مصرح.", 401);
     const body = await request.json() as Record<string, unknown>;
     if (!validTable(body.resource) || typeof body.id !== "string" || !body.id.trim()) return bad("بيانات التحديث غير صالحة.");
     const table = body.resource, id = body.id.trim();
