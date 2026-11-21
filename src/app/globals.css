@@ -464,3 +464,105 @@ body:has(.platform-app):after{
  .analytics-bars{height:110px!important}
  .platform-footnote{flex-direction:column}
 }
+
+
+/* Unified platform skin: use the exact black / champagne glass language of owner login */
+.platform-app{
+  min-height:100vh!important;
+  color:#f6f1e7!important;
+  background:#030303!important;
+  background-image:
+    radial-gradient(ellipse at 50% 42%,rgba(48,35,17,.22),transparent 44%),
+    radial-gradient(ellipse at 8% 15%,rgba(168,121,48,.13),transparent 32%),
+    radial-gradient(ellipse at 95% 85%,rgba(168,121,48,.12),transparent 30%)!important;
+}
+.platform-sidebar,.platform-topbar{
+  background:rgba(8,8,7,.48)!important;
+  border-color:rgba(216,182,107,.24)!important;
+  backdrop-filter:blur(26px) saturate(135%)!important;
+  -webkit-backdrop-filter:blur(26px) saturate(135%)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.09),0 18px 55px rgba(0,0,0,.38)!important;
+}
+.platform-sidebar{border-left:1px solid rgba(216,182,107,.24)!important}
+.platform-topbar{border-bottom:1px solid rgba(216,182,107,.2)!important}
+.platform-content{background:transparent!important}
+.platform-title-row h1{color:#f6f1e7!important}
+.platform-title-row p,.panel-heading p,.kpi-card>small{color:#a9a092!important}
+.platform-title-row .eyebrow,.panel-heading .eyebrow,.sidebar-brand small{
+  color:#d9b66a!important;letter-spacing:.2em!important
+}
+.kpi-card,.panel,.date-chip,.tenant-search,.record-count,.sidebar-status{
+  position:relative!important;
+  overflow:hidden!important;
+  border:1px solid rgba(216,182,107,.48)!important;
+  border-radius:22px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.035) 48%,rgba(215,174,75,.055))!important;
+  -webkit-backdrop-filter:blur(24px) saturate(135%)!important;
+  backdrop-filter:blur(24px) saturate(135%)!important;
+  box-shadow:0 30px 100px rgba(0,0,0,.42),0 0 42px rgba(217,182,106,.075),inset 0 1px rgba(255,255,255,.16)!important;
+}
+.kpi-card:after,.panel:after,.kpi-card:before,.panel:before{display:none!important;content:none!important}
+.kpi-card.kpi-primary{
+  border-color:rgba(240,217,154,.72)!important;
+  background:linear-gradient(145deg,rgba(216,182,107,.2),rgba(255,255,255,.055) 52%,rgba(215,174,75,.075))!important
+}
+.kpi-card>strong{color:#f0d99a!important;text-shadow:0 0 24px rgba(217,182,106,.22)!important}
+.kpi-top{color:#d8cfbd!important}
+.panel{padding:clamp(20px,2vw,28px)!important}
+.activity-chart-panel,.distribution-panel{min-height:260px!important}
+.panel-heading h2{color:#f6f1e7!important}
+.analytics-bars{border-bottom:1px solid rgba(216,182,107,.2)!important}
+.analytics-bars i{
+  border:1px solid rgba(240,217,154,.3)!important;
+  border-radius:8px 8px 2px 2px!important;
+  background:linear-gradient(180deg,#f5dfa5 0%,#c49a55 46%,rgba(108,73,30,.56) 100%)!important;
+  box-shadow:0 0 24px rgba(217,182,106,.16),inset 0 1px rgba(255,255,255,.5)!important
+}
+.analytics-axis,.analytics-note,.health-foot{color:#a9a092!important}
+.health-total strong{color:#f0d99a!important}
+.health-bar{height:7px!important;background:rgba(255,255,255,.08)!important;border:1px solid rgba(216,182,107,.18)!important}
+.health-bar i{background:linear-gradient(90deg,#9e7639,#f0d99a,#b68b49)!important}
+.tenants-panel{padding:0!important}
+.tenants-heading{padding:25px!important}
+.tenants-panel th{background:rgba(255,255,255,.045)!important;color:#d8bd89!important}
+.tenants-panel td{background:rgba(255,255,255,.012)!important;color:#e7e0d2!important}
+.tenants-panel th,.tenants-panel td{border-top-color:rgba(216,182,107,.12)!important}
+.tenants-panel tbody tr:hover td{background:rgba(216,182,107,.075)!important}
+.tenant-search{border-radius:12px!important;background:rgba(0,0,0,.32)!important}
+.tenant-search input{background:transparent!important;color:#f6f1e7!important}
+.tenant-search input::placeholder{color:#8e8575!important}
+.status{border:1px solid rgba(216,182,107,.22)!important;background:rgba(255,255,255,.055)!important}
+.status-active{color:#b9e5c9!important;background:rgba(80,170,125,.12)!important}
+.status-suspended{color:#efb9b9!important;background:rgba(205,110,110,.12)!important}
+.platform-sidebar nav button{color:#aaa092!important;border:1px solid transparent!important}
+.platform-sidebar nav button.active{
+  color:#f0d99a!important;
+  border-color:rgba(216,182,107,.42)!important;
+  background:linear-gradient(110deg,rgba(216,182,107,.19),rgba(255,255,255,.035))!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.12),0 12px 35px rgba(0,0,0,.24)!important
+}
+.platform-sidebar nav button:hover,.platform-topbar button:hover{
+  color:#f0d99a!important;background:rgba(216,182,107,.11)!important;border-color:rgba(216,182,107,.28)!important
+}
+.platform-topbar button{
+  border:1px solid rgba(216,182,107,.4)!important;border-radius:999px!important;
+  background:linear-gradient(105deg,rgba(158,118,57,.35),rgba(240,217,154,.12))!important;color:#f0d99a!important
+}
+.breadcrumb{color:#d8bd89!important}
+.breadcrumb span{color:#79613c!important}
+.date-chip{color:#d8bd89!important}
+.platform-footnote{color:#8f8065!important;border-top:1px solid rgba(216,182,107,.16)!important}
+/* Strip decorative glyphs, dots, initials and empty icon slots from the control UI */
+.platform-sidebar nav button>span,.platform-sidebar nav button>i,
+.health-icon,.avatar,.topbar-avatar,.tenant-name>span{display:none!important}
+.system-live:before,.system-live:after{display:none!important;content:none!important}
+.platform-sidebar nav button{gap:0!important}
+.tenant-name{gap:0!important}
+.sidebar-user{border-top:1px solid rgba(216,182,107,.14)!important}
+.sidebar-user button{border:1px solid rgba(216,182,107,.3)!important;border-radius:999px!important;background:rgba(216,182,107,.08)!important;color:#d8bd89!important}
+.error-panel{border:1px solid rgba(220,130,130,.35)!important;background:rgba(120,30,30,.18)!important;backdrop-filter:blur(20px)!important}
+@media(max-width:760px){
+ .platform-sidebar,.platform-topbar{background:rgba(8,8,7,.72)!important}
+ .tenants-heading{padding:18px!important}
+ .activity-chart-panel,.distribution-panel{min-height:0!important}
+}
