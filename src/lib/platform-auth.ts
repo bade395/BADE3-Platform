@@ -29,9 +29,8 @@ export async function appwriteRequest<T>(path: string, init: RequestInit = {}, s
     ...init,
     headers: {
       "X-Appwrite-Project": projectId,
-      "X-Appwrite-Key": apiKey,
+      ...(session ? { "X-Appwrite-Session": session } : { "X-Appwrite-Key": apiKey }),
       "Content-Type": "application/json",
-      ...(session ? { "X-Appwrite-Session": session } : {}),
       ...init.headers,
     },
     cache: "no-store",
