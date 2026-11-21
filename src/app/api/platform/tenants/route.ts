@@ -23,7 +23,7 @@ export async function POST(request:Request){
 export async function PATCH(request:Request){
  try{
   if(!originOK(request))return NextResponse.json({error:"طلب غير صالح."},{status:403});
-  if(!await verifyPlatformOwner())return NextResponse.json({error:"غير مصرح."},{status:401});
+  const actor=await verifyPlatformOwner();if(!actor)return NextResponse.json({error:"غير مصرح."},{status:401});
   const b=await request.json() as {id?:unknown;name?:unknown;slug?:unknown;status?:unknown};const id=typeof b.id==="string"?b.id.trim():"";
   if(!id||id.length>36)return NextResponse.json({error:"معرّف الشركة غير صالح."},{status:400});
   const all=await rows();const current=all.find(r=>r.$id===id);if(!current)return NextResponse.json({error:"الشركة غير موجودة."},{status:404});
