@@ -43,6 +43,14 @@ export async function POST(request: Request) {
       if (name.length < 2 || name.length > 128 || !/^[a-z0-9](?:[a-z0-9-]{1,62}[a-z0-9])$/.test(slug)) return bad("بيانات الفرع غير صالحة.");
       const all = await list(table);
       if (all.some(r => clean(r).tenant_id === tenant_id && clean(r).slug === slug)) return bad("معرّف الفرع مستخدم داخل الشركة.", 409);
+      const subscriptions = await list("subscriptions");
+      const currentSubscription = subscriptions.filter(r => clean(r).tenant_id === tenant_id && ["active", "trial"].includes(String(clean(r).status))).sort((a,b) => String(clean(b).starts_at ?? "").localeCompare(String(clean(a).starts_at ?? "")))[0];
+      if (!currentSubscription) return bad("لا يمكن إضافة فرع قبل وجود اشتراك نشط أو تجريبي.");
+      const plans = await list("plans");
+      const plan = plans.find(r => r.$id === String(clean(currentSubscription).plan_id));
+      const branchLimit = Number(plan ? clean(plan).branch_limit : 0);
+      const usedBranches = all.filter(r => clean(r).tenant_id === tenant_id && clean(r).status !== "inactive").length;
+      if (!Number.isInteger(branchLimit) || branchLimit < 1 || usedBranches >= branchLimit) return bad("تم الوصول إلى الحد الأقصى للفروع في الباقة الحالية.", 409);
       data = { tenant_id, name, slug, status: "active" };
     } else {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
