@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
       const name = typeof body.name === "string" ? body.name.trim() : "";
       const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
-      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
+      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id && clean(r).status === "active")) return bad("الشركة المحددة غير موجودة أو غير نشطة.");
       if (name.length < 2 || name.length > 128 || !/^[a-z0-9](?:[a-z0-9-]{1,62}[a-z0-9])$/.test(slug)) return bad("بيانات الفرع غير صالحة.");
       const all = await list(table);
       if (all.some(r => clean(r).tenant_id === tenant_id && clean(r).slug === slug)) return bad("معرّف الفرع مستخدم داخل الشركة.", 409);
@@ -56,12 +56,16 @@ export async function POST(request: Request) {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
       const plan_id = typeof body.plan_id === "string" ? body.plan_id.trim() : "";
       const status = typeof body.status === "string" ? body.status : "active";
-      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
-      if (!plan_id || !(await exists("plans", plan_id))) return bad("الباقة المحددة غير موجودة.");
+      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id && clean(r).status === "active")) return bad("الشركة المحددة غير موجودة أو غير نشطة.");
+      const selectedPlan = (await list("plans")).find(r => r.$id === plan_id);
+      if (!selectedPlan || clean(selectedPlan).is_active !== true) return bad("الباقة المحددة غير موجودة أو غير مفعلة.");
+      const existingSubscriptions = await list("subscriptions");
+      if (existingSubscriptions.some(r => clean(r).tenant_id === tenant_id && ["active", "trial"].includes(String(clean(r).status)))) return bad("توجد بالفعل عضوية نشطة أو تجريبية لهذه الشركة؛ حدّث العضوية الحالية بدل إنشاء أخرى.", 409);
       if (!["active", "trial", "cancelled", "expired", "pending"].includes(status)) return bad("حالة الاشتراك غير صالحة.");
       const starts_at = typeof body.starts_at === "string" && body.starts_at ? new Date(body.starts_at).toISOString() : undefined;
       const ends_at = typeof body.ends_at === "string" && body.ends_at ? new Date(body.ends_at).toISOString() : undefined;
       if (starts_at === undefined && body.starts_at || ends_at === undefined && body.ends_at) return bad("تاريخ الاشتراك غير صالح.");
+      if (starts_at && ends_at && Date.parse(ends_at) <= Date.parse(starts_at)) return bad("تاريخ نهاية الاشتراك يجب أن يكون بعد تاريخ البداية.");
       data = { tenant_id, plan_id, status, ...(starts_at ? { starts_at } : {}), ...(ends_at ? { ends_at } : {}) };
     }
     const id = crypto.randomUUID();
