@@ -78,7 +78,9 @@ export async function PATCH(request: Request) {
       if (body.name !== undefined) { if (typeof body.name !== "string" || body.name.trim().length < 2 || body.name.trim().length > 128) return bad("اسم الباقة غير صالح."); data.name = body.name.trim(); }
       if (body.price_monthly !== undefined) { const n = Number(body.price_monthly); if (!Number.isFinite(n) || n < 0) return bad("السعر غير صالح."); data.price_monthly = n; }
       if (body.branch_limit !== undefined) { const n = Number(body.branch_limit); if (!Number.isInteger(n) || n < 1) return bad("حد الفروع غير صالح."); data.branch_limit = n; }
-      if (body.is_active !== undefined) { if (typeof body.is_active !== "boolean") return bad("حالة الباقة غير صالحة."); data.is_active = body.is_active; }\n      if (body.price_yearly !== undefined) { const n = Number(body.price_yearly); if (!Number.isFinite(n) || n < 0) return bad("السعر السنوي غير صالح."); data.price_yearly = n; }\n      for (const key of ["description", "features", "terms"] as const) if (body[key] !== undefined) { if (typeof body[key] !== "string" || body[key].length > 5000) return bad("تفاصيل الباقة غير صالحة."); data[key] = body[key]; }
+      if (body.is_active !== undefined) { if (typeof body.is_active !== "boolean") return bad("حالة الباقة غير صالحة."); data.is_active = body.is_active; }
+      if (body.price_yearly !== undefined) { const n = Number(body.price_yearly); if (!Number.isFinite(n) || n < 0) return bad("السعر السنوي غير صالح."); data.price_yearly = n; }
+      for (const key of ["description", "features", "terms"] as const) if (body[key] !== undefined) { if (typeof body[key] !== "string" || body[key].length > 5000) return bad("تفاصيل الباقة غير صالحة."); data[key] = body[key]; }
     } else if (table === "branches") {
       if (body.name !== undefined) { if (typeof body.name !== "string" || body.name.trim().length < 2 || body.name.trim().length > 128) return bad("اسم الفرع غير صالح."); data.name = body.name.trim(); }
       if (body.status !== undefined) { if (!["active", "inactive", "suspended"].includes(String(body.status))) return bad("حالة الفرع غير صالحة."); data.status = body.status; }
