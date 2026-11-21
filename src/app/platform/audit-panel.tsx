@@ -1,0 +1,11 @@
+"use client";
+import { useCallback, useEffect, useState } from "react";
+type EventRow = { id:string; actor_email?:string; actor_user_id:string; action:string; resource_type:string; resource_id?:string; tenant_id?:string; details?:string; created_at:string };
+export default function AuditPanel(){
+ const [events,setEvents]=useState<EventRow[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState("");
+ const load=useCallback(async()=>{setLoading(true);setError("");try{const r=await fetch("/api/platform/audit",{cache:"no-store"});const j=await r.json();if(!r.ok)throw new Error(j.error||"تعذّر تحميل السجل.");setEvents(j.events??[])}catch(e){setError(e instanceof Error?e.message:"حدث خطأ.")}finally{setLoading(false)}},[]);
+ useEffect(()=>{void load()},[load]);
+ const label=(v:string)=>v.replaceAll("."," · ").replaceAll("_"," ");
+ return <section className="panel tenants-panel"><div className="panel-heading tenants-heading"><div><span className="eyebrow">SECURITY & COMPLIANCE</span><h2>سجل تدقيق المنصة</h2><p>سجل زمني للعمليات الإدارية المنفذة من مالك المنصة.</p></div><button type="button" onClick={()=>void load()} disabled={loading}>تحديث السجل</button></div>
+ {error&&<div className="error-panel" role="alert">{error}</div>}<div className="table-wrap"><table><thead><tr><th>التاريخ والوقت</th><th>المنفذ</th><th>العملية</th><th>نوع السجل</th><th>معرّف السجل</th><th>تفاصيل</th></tr></thead><tbody>{loading?<tr><td colSpan={6}>جارٍ تحميل سجل التدقيق...</td></tr>:events.map(e=><tr key={e.id}><td>{new Date(e.created_at).toLocaleString("ar-SA",{dateStyle:"medium",timeStyle:"short"})}</td><td>{e.actor_email||e.actor_user_id}</td><td>{label(e.action)}</td><td>{label(e.resource_type)}</td><td><small>{e.resource_id||"—"}</small></td><td><small>{e.details||"—"}</small></td></tr>)}{!loading&&!events.length&&<tr><td colSpan={6}>لا توجد عمليات مسجلة حتى الآن.</td></tr>}</tbody></table></div><small className="health-foot">يعرض آخر 200 حدث. لا يوفر هذا السجل تعديلًا أو حذفًا للأحداث من الواجهة.</small></section>
+}
