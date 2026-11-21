@@ -3,10 +3,10 @@ import { appwriteRequest, verifyPlatformOwner } from "@/lib/platform-auth";
 export const runtime = "nodejs";
 const db = process.env.BADE3_CORE_DATABASE_ID ?? "";
 type Row = { $id: string; data?: Record<string, unknown> };
-async function rows(table: string) {
+async function rows(table: string): Promise<Array<Record<string, unknown> & { id: string }>> {
   const q = encodeURIComponent(JSON.stringify({ method: "limit", values: [500] }));
   const result = await appwriteRequest<{ rows?: Row[] }>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);
-  return (result.rows ?? []).map(r => ({ id: r.$id, ...(r.data ?? {}) }));
+  return (result.rows ?? []).map(r => ({ id: r.$id, ...(r.data ?? {}) } as Record<string, unknown> & { id: string }));
 }
 export async function GET() {
   try {
