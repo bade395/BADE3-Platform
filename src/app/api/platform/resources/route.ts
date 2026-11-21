@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { appwriteRequest, verifyPlatformOwner } from "@/lib/platform-auth";
+import { appwriteRequest, verifyPlatformOwner, writePlatformAudit } from "@/lib/platform-auth";
 
 export const runtime = "nodejs";
 const db = process.env.BADE3_CORE_DATABASE_ID ?? "";
@@ -22,7 +22,7 @@ function bad(message: string, status = 400) { return NextResponse.json({ error: 
 export async function POST(request: Request) {
   try {
     if (!originOK(request)) return bad("طلب غير صالح.", 403);
-    if (!await verifyPlatformOwner()) return bad("غير مصرح.", 401);
+    const actor = await verifyPlatformOwner(); if (!actor) return bad("غير مصرح.", 401);
     const body = await request.json() as Record<string, unknown>;
     if (!validTable(body.resource)) return bad("نوع السجل غير مدعوم.");
     const table = body.resource;
@@ -66,6 +66,7 @@ export async function POST(request: Request) {
     }
     const id = crypto.randomUUID();
     await appwriteRequest(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows`, { method: "POST", body: JSON.stringify({ rowId: id, data, permissions: [] }) });
+    await writePlatformAudit(actor, { action: `${table}.created`, resource_type: table, resource_id: id, tenant_id: typeof data.tenant_id === "string" ? data.tenant_id : undefined, details: table === "plans" ? { code: data.code, name: data.name } : { status: data.status } });
     return NextResponse.json({ success: true, id, data }, { status: 201, headers: { "Cache-Control": "no-store" } });
   } catch {
     return bad("تعذّر حفظ السجل.", 500);
@@ -100,6 +101,7 @@ export async function PATCH(request: Request) {
       }
     }
     await appwriteRequest(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows/${encodeURIComponent(id)}`, { method: "PATCH", body: JSON.stringify({ data }) });
+    await writePlatformAudit(actor, { action: `${table}.updated`, resource_type: table, resource_id: id, tenant_id: typeof data.tenant_id === "string" ? data.tenant_id : undefined, details: { changed_fields: Object.keys(body).filter(k => !["resource", "id"].includes(k)) } });
     return NextResponse.json({ success: true, id, data }, { headers: { "Cache-Control": "no-store" } });
   } catch {
     return bad("تعذّر تحديث السجل.", 500);
