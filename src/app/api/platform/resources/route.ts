@@ -6,9 +6,9 @@ const db = process.env.BADE3_CORE_DATABASE_ID ?? "";
 type Row = { $id: string; data?: Record<string, unknown> } & Record<string, unknown>;
 type Rows = { rows?: Row[] };
 const tables = ["plans", "branches", "subscriptions"] as const;
-type Table = typeof tables[number];
+type ResourceTable = typeof tables[number];\ntype Table = ResourceTable | "tenants";
 const clean = (row: Row) => row.data && typeof row.data === "object" ? row.data : Object.fromEntries(Object.entries(row).filter(([k]) => !k.startsWith("$") && k !== "data"));
-const validTable = (v: unknown): v is Table => typeof v === "string" && tables.includes(v as Table);
+const validTable = (v: unknown): v is ResourceTable => typeof v === "string" && tables.includes(v as ResourceTable);
 const originOK = (r: Request) => { const o = r.headers.get("origin"); return !!o && o === new URL(r.url).origin; };
 async function list(table: Table) {
   const q = encodeURIComponent(JSON.stringify({ method: "limit", values: [500] }));
@@ -38,7 +38,7 @@ export async function POST(request: Request) {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
       const name = typeof body.name === "string" ? body.name.trim() : "";
       const slug = typeof body.slug === "string" ? body.slug.trim().toLowerCase() : "";
-      if (!tenant_id || !await exists("branches", "__never__") && !(await list("tenants" as Table)).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
+      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
       if (name.length < 2 || name.length > 128 || !/^[a-z0-9](?:[a-z0-9-]{1,62}[a-z0-9])$/.test(slug)) return bad("بيانات الفرع غير صالحة.");
       const all = await list(table);
       if (all.some(r => clean(r).tenant_id === tenant_id && clean(r).slug === slug)) return bad("معرّف الفرع مستخدم داخل الشركة.", 409);
@@ -47,7 +47,7 @@ export async function POST(request: Request) {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
       const plan_id = typeof body.plan_id === "string" ? body.plan_id.trim() : "";
       const status = typeof body.status === "string" ? body.status : "active";
-      if (!tenant_id || !(await list("tenants" as Table)).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
+      if (!tenant_id || !(await list("tenants")).some(r => r.$id === tenant_id)) return bad("الشركة المحددة غير موجودة.");
       if (!plan_id || !(await exists("plans", plan_id))) return bad("الباقة المحددة غير موجودة.");
       if (!["active", "trial", "cancelled", "expired", "pending"].includes(status)) return bad("حالة الاشتراك غير صالحة.");
       const starts_at = typeof body.starts_at === "string" && body.starts_at ? new Date(body.starts_at).toISOString() : undefined;
