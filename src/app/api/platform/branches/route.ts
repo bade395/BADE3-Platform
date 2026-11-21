@@ -1,0 +1,7 @@
+import { NextResponse } from "next/server";
+import { appwriteRequest, verifyPlatformOwner } from "@/lib/platform-auth";
+export const runtime="nodejs";
+const db=process.env.BADE3_CORE_DATABASE_ID??"";
+type Row={$id:string;data?:Record<string,unknown>} & Record<string,unknown>;
+async function list(table:string){const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);return (r.rows??[]).map(x=>({id:x.$id,...(x.data??{})}) as Record<string,unknown>&{id:string})}
+export async function GET(){try{if(!await verifyPlatformOwner())return NextResponse.json({error:"غير مصرح."},{status:401});const [branches,tenants,subscriptions,plans]=await Promise.all([list("branches"),list("tenants"),list("subscriptions"),list("plans")]);const tm=new Map(tenants.map(x=>[x.id,x]));const sm=new Map(subscriptions.map(x=>[String(x.tenant_id),x]));const pm=new Map(plans.map(x=>[x.id,x]));return NextResponse.json({branches:branches.map(b=>({...b,tenant:tm.get(String(b.tenant_id))})),tenants:tenants.filter(t=>t.status==="active"),subscriptions:subscriptions.map(s=>({...s,plan:pm.get(String(s.plan_id))})),plans},{headers:{"Cache-Control":"no-store"}})}catch{return NextResponse.json({error:"تعذّر تحميل الفروع."},{status:503})}}
