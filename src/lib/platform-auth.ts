@@ -67,3 +67,25 @@ export function platformSessionCookieName() {
   assertConfig();
   return sessionCookie;
 }
+
+export async function writePlatformAudit(actor: { id: string; email: string }, event: { action: string; resource_type: string; resource_id?: string; tenant_id?: string; details?: Record<string, unknown> }) {
+  try {
+    const id = crypto.randomUUID().replace(/-/g, "");
+    await appwriteRequest(`/tablesdb/${encodeURIComponent(databaseId)}/tables/platform_audit_logs/rows`, {
+      method: "POST",
+      body: JSON.stringify({ rowId: id, permissions: [], data: {
+        actor_user_id: actor.id,
+        actor_email: actor.email.slice(0, 255),
+        action: event.action.slice(0, 64),
+        resource_type: event.resource_type.slice(0, 64),
+        ...(event.resource_id ? { resource_id: event.resource_id.slice(0, 128) } : {}),
+        ...(event.tenant_id ? { tenant_id: event.tenant_id.slice(0, 36) } : {}),
+        ...(event.details ? { details: JSON.stringify(event.details).slice(0, 60000) } : {}),
+        created_at: new Date().toISOString(),
+      } }),
+    });
+    return true;
+  } catch {
+    return false;
+  }
+}
