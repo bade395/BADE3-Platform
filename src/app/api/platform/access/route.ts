@@ -3,8 +3,9 @@ import { appwriteRequest, verifyPlatformOwner } from "@/lib/platform-auth";
 export const runtime="nodejs";
 const db=process.env.BADE3_CORE_DATABASE_ID??"";
 type Row={$id:string;data?:Record<string,unknown>} & Record<string,unknown>;
+type DataRow={id:string;tenant_id?:string;branch_id?:string;user_id?:string;status?:string;is_active?:boolean;role?:string;[key:string]:unknown};
 const clean=(r:Row)=>r.data&&typeof r.data==="object"?r.data:Object.fromEntries(Object.entries(r).filter(([k])=>!k.startsWith("$")&&k!=="data"));
-async function list(table:string){const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);return (r.rows??[]).map(x=>({id:x.$id,...clean(x)}));}
+async function list(table:string):Promise<DataRow[]>{const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);return (r.rows??[]).map(x=>({id:x.$id,...clean(x)} as DataRow));}
 function originOK(r:Request){const o=r.headers.get("origin");return !!o&&o===new URL(r.url).origin;}
 const json=(body:unknown,status=200)=>NextResponse.json(body,{status,headers:{"Cache-Control":"no-store"}});
 export async function GET(){try{if(!await verifyPlatformOwner())return json({error:"غير مصرح."},401);const [tenants,members,branches,access]=await Promise.all([list("tenants"),list("tenant_members"),list("branches"),list("branch_staff_access")]);return json({tenants,members:members.map(m=>({...m,tenant:tenants.find(t=>t.id===m.tenant_id)})),branches,access:access.map(a=>({...a,branch:branches.find(b=>b.id===a.branch_id)}))});}catch{return json({error:"تعذّر تحميل إدارة الصلاحيات."},503)}}
