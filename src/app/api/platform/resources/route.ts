@@ -48,7 +48,8 @@ export async function POST(request: Request) {
       if (!currentSubscription) return bad("لا يمكن إضافة فرع قبل وجود اشتراك نشط أو تجريبي.");
       const plans = await list("plans");
       const plan = plans.find(r => r.$id === String(clean(currentSubscription).plan_id));
-      const branchLimit = Number(plan ? clean(plan).branch_limit : 0);
+      if (!plan || clean(plan).is_active !== true) return bad("الباقة المرتبطة بالاشتراك غير مفعلة؛ لا يمكن إضافة فرع.");
+      const branchLimit = Number(clean(plan).branch_limit);
       const usedBranches = all.filter(r => clean(r).tenant_id === tenant_id && clean(r).status !== "inactive").length;
       if (!Number.isInteger(branchLimit) || branchLimit < 1 || usedBranches >= branchLimit) return bad("تم الوصول إلى الحد الأقصى للفروع في الباقة الحالية.", 409);
       data = { tenant_id, name, slug, status: "active" };
@@ -98,7 +99,7 @@ export async function PATCH(request: Request) {
       if (body.name !== undefined) { if (typeof body.name !== "string" || body.name.trim().length < 2 || body.name.trim().length > 128) return bad("اسم الفرع غير صالح."); data.name = body.name.trim(); }
       if (body.status !== undefined) { if (!["active", "inactive", "suspended"].includes(String(body.status))) return bad("حالة الفرع غير صالحة."); data.status = body.status; }
     } else {
-      if (body.status !== undefined) { if (!["active", "trial", "cancelled", "expired", "pending"].includes(String(body.status))) return bad("حالة الاشتراك غير صالحة."); data.status = body.status; }
+      if (body.status !== undefined) { if (!["active", "trial", "cancelled", "expired", "pending"].includes(String(body.status))) return bad("حالة الاشتراك غير صالحة."); if (["active", "trial"].includes(String(body.status))) { const tenant = (await list("tenants")).find(r => r.$id === String(data.tenant_id)); const plan = (await list("plans")).find(r => r.$id === String(data.plan_id)); if (!tenant || clean(tenant).status !== "active" || !plan || clean(plan).is_active !== true) return bad("لا يمكن تفعيل الاشتراك لشركة غير نشطة أو باقة غير مفعلة.", 409); const duplicate = (await list("subscriptions")).some(r => r.$id !== id && clean(r).tenant_id === data.tenant_id && ["active", "trial"].includes(String(clean(r).status))); if (duplicate) return bad("توجد عضوية نشطة أو تجريبية أخرى لهذه الشركة.", 409); } data.status = body.status; }
       for (const key of ["starts_at", "ends_at"] as const) if (body[key] !== undefined) {
         if (body[key] === null || body[key] === "") delete data[key];
         else { if (typeof body[key] !== "string" || Number.isNaN(Date.parse(body[key]))) return bad("تاريخ الاشتراك غير صالح."); data[key] = new Date(body[key]).toISOString(); }
