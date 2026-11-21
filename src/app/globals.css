@@ -204,3 +204,112 @@ td small{display:block;color:#8c9ab2;font-size:11px;margin-top:5px;direction:ltr
 .platform-sidebar nav button>span,.platform-sidebar nav button>i,.kpi-top i,.kpi-decoration,.health-icon,.system-live i,.sidebar-status i,.dot-active,.dot-paused,.health-row i{display:none!important}
 .tenant-name>span,.avatar,.topbar-avatar{background:rgba(215,181,112,.12)!important;border:1px solid rgba(215,181,112,.22)!important}
 @media(prefers-reduced-transparency:reduce){.login-glass-card,.kpi-card,.panel,.platform-sidebar,.platform-topbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+
+
+/* BADE3 executive dashboard — visible redesign */
+.platform-app{
+  min-height:100vh!important;
+  position:relative!important;
+  isolation:isolate!important;
+  background:
+    radial-gradient(ellipse at 78% 8%,rgba(202,166,99,.16),transparent 31%),
+    radial-gradient(ellipse at 28% 72%,rgba(117,96,58,.10),transparent 38%),
+    linear-gradient(135deg,#080a0b 0%,#121516 48%,#090b0c 100%)!important;
+}
+.platform-app:before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.025) 50%,transparent 78%);
+}
+.platform-sidebar{
+  width:270px!important;padding:30px 20px!important;
+  background:rgba(8,10,11,.38)!important;
+  border-left:1px solid rgba(231,205,151,.2)!important;
+  box-shadow:inset -1px 0 rgba(255,255,255,.035),18px 0 60px rgba(0,0,0,.16)!important;
+  backdrop-filter:blur(42px) saturate(190%)!important;
+  -webkit-backdrop-filter:blur(42px) saturate(190%)!important;
+}
+.sidebar-brand{padding:8px 8px 32px!important;border-bottom:1px solid rgba(255,255,255,.09)!important}
+.sidebar-brand img{width:155px!important;height:66px!important;object-fit:contain!important}
+.sidebar-brand small{display:block!important;margin-top:8px!important;letter-spacing:.28em!important;color:#c5a76d!important;font-size:9px!important}
+.sidebar-caption{margin:30px 10px 13px!important;color:#8d8067!important;letter-spacing:.13em!important}
+.platform-sidebar nav{gap:8px!important}
+.platform-sidebar nav button{
+  min-height:49px!important;padding:0 17px!important;border:1px solid transparent!important;
+  border-radius:12px!important;color:#aeb0ad!important;font-size:12px!important;
+  transition:all .2s ease!important;
+}
+.platform-sidebar nav button:hover{background:rgba(255,255,255,.055)!important;color:#fff!important}
+.platform-sidebar nav button.active{
+  background:linear-gradient(100deg,rgba(215,181,112,.19),rgba(215,181,112,.045))!important;
+  border-color:rgba(224,193,132,.28)!important;color:#f2dca9!important;
+  box-shadow:inset -3px 0 #d6b574,0 10px 30px rgba(0,0,0,.14)!important;
+}
+.platform-main{min-width:0!important}
+.platform-topbar{
+  height:78px!important;padding:0 clamp(24px,4vw,58px)!important;
+  background:rgba(8,10,11,.34)!important;
+  border-bottom:1px solid rgba(255,255,255,.09)!important;
+  backdrop-filter:blur(38px) saturate(180%)!important;
+  -webkit-backdrop-filter:blur(38px) saturate(180%)!important;
+}
+.breadcrumb{font-size:11px!important;letter-spacing:.08em!important;color:#c9b88f!important}
+.breadcrumb span{color:#665b46!important;margin:0 9px!important}
+.topbar-actions>button{
+  min-height:39px!important;padding:0 17px!important;border-radius:10px!important;
+  border:1px solid rgba(222,192,132,.28)!important;
+  background:rgba(218,185,119,.10)!important;color:#e9d5a9!important;
+}
+.topbar-avatar,.avatar{width:38px!important;height:38px!important;border-radius:12px!important}
+.platform-content{padding:clamp(28px,4vw,58px)!important;max-width:1800px!important}
+.platform-title-row{margin-bottom:30px!important;align-items:end!important}
+.platform-title-row .eyebrow{display:inline-flex!important;margin-bottom:13px!important;letter-spacing:.22em!important}
+.platform-title-row h1{font-size:clamp(28px,3vw,42px)!important;line-height:1.25!important;color:#f5f0e5!important;margin:0 0 10px!important;font-weight:700!important}
+.platform-title-row p{font-size:13px!important;color:#9b9b91!important}
+.date-chip{padding:11px 17px!important;border-radius:30px!important;background:rgba(255,255,255,.045)!important;border:1px solid rgba(255,255,255,.13)!important;color:#d3c29d!important}
+.dashboard-kpis{gap:18px!important}
+.kpi-card{
+  min-height:172px!important;padding:25px 25px 22px!important;border-radius:18px!important;
+  position:relative!important;overflow:hidden!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.115),rgba(255,255,255,.025) 72%)!important;
+  border:1px solid rgba(255,255,255,.19)!important;
+  backdrop-filter:blur(38px) saturate(185%)!important;-webkit-backdrop-filter:blur(38px) saturate(185%)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.2),0 22px 55px rgba(0,0,0,.23)!important;
+}
+.kpi-card:after{content:"";position:absolute;inset:auto -25px -70px auto;width:170px;height:170px;border-radius:50%;border:1px solid rgba(220,190,130,.13);box-shadow:0 0 0 18px rgba(220,190,130,.025),0 0 0 38px rgba(220,190,130,.018);pointer-events:none}
+.kpi-card.kpi-primary{background:linear-gradient(140deg,rgba(207,169,99,.2),rgba(255,255,255,.045) 76%)!important;border-color:rgba(231,201,145,.38)!important}
+.kpi-top{font-size:12px!important;color:#c4b99f!important;letter-spacing:.02em!important}
+.kpi-card>strong{font-size:clamp(38px,4vw,50px)!important;margin:19px 0 8px!important;color:#f0d79e!important}
+.kpi-card>small{font-size:10px!important;color:#9b9a90!important}
+.dashboard-middle{gap:18px!important;margin-top:20px!important}
+.panel{
+  border-radius:18px!important;
+  background:linear-gradient(145deg,rgba(255,255,255,.105),rgba(255,255,255,.025) 78%)!important;
+  border:1px solid rgba(255,255,255,.17)!important;
+  backdrop-filter:blur(38px) saturate(180%)!important;-webkit-backdrop-filter:blur(38px) saturate(180%)!important;
+  box-shadow:inset 0 1px rgba(255,255,255,.17),0 22px 55px rgba(0,0,0,.2)!important;
+}
+.activity-chart-panel,.distribution-panel{padding:25px!important;min-height:260px!important}
+.panel-heading h2{font-size:18px!important;color:#f0ece2!important;margin-top:9px!important}
+.panel-heading p{font-size:11px!important}
+.data-state{border-radius:30px!important;background:rgba(215,181,112,.08)!important;color:#d8bd83!important}
+.analytics-bars{height:142px!important;border-bottom-color:rgba(255,255,255,.15)!important}
+.analytics-bars i{border-radius:7px 7px 2px 2px!important;opacity:.82!important}
+.analytics-note{font-size:10px!important;color:#aaa18f!important}
+.health-total{padding:20px 0 17px!important}
+.health-total strong{font-size:42px!important}
+.health-row{font-size:11px!important;border-bottom:1px solid rgba(255,255,255,.055)!important;padding:11px 0!important}
+.health-bar{height:7px!important;background:rgba(255,255,255,.09)!important}
+.tenants-panel{margin-top:20px!important}
+.tenants-heading{padding:25px!important}
+.tenants-heading .panel-heading h2{font-size:18px!important}
+.tenant-search{border-radius:11px!important;background:rgba(0,0,0,.2)!important;border:1px solid rgba(255,255,255,.17)!important}
+.tenant-search input{height:42px!important;font-size:11px!important}
+.record-count{padding:9px 12px!important;border-radius:9px!important;background:rgba(255,255,255,.05)!important}
+.tenants-panel th,.tenants-panel td{padding:17px 20px!important;font-size:11px!important;border-top-color:rgba(255,255,255,.075)!important}
+.tenants-panel th{color:#c1b28f!important;background:rgba(255,255,255,.035)!important}
+.tenant-name>span{width:36px!important;height:36px!important;border-radius:11px!important;font-size:13px!important}
+.tenant-name b{font-size:11px!important}
+.status{padding:6px 11px!important;border:1px solid rgba(255,255,255,.08)!important}
+.platform-footnote{padding:22px 3px!important;color:#8b8069!important}
+@media(max-width:1100px){.platform-sidebar{width:220px!important;padding:22px 13px!important}.platform-content{padding:28px!important}}
+@media(max-width:760px){.platform-sidebar{width:auto!important;padding:13px 16px!important}.sidebar-brand{padding:0!important}.sidebar-brand img{width:105px!important;height:43px!important}.platform-content{padding:24px 15px!important}.platform-topbar{height:62px!important;padding:0 16px!important}.kpi-card{min-height:142px!important;padding:17px!important}.kpi-card>strong{font-size:34px!important}.activity-chart-panel,.distribution-panel{padding:18px!important}.tenants-heading{padding:18px!important}}
