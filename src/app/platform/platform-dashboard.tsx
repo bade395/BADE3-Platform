@@ -1,5 +1,6 @@
 "use client";
-import{useCallback,useEffect,useState}from"react";\nimport BillingPanel from "./billing-panel";
+import{useCallback,useEffect,useState}from"react";
+import BillingPanel from "./billing-panel";
 type Tenant={id:string;name:string;slug:string;status:string;branchCount:number;domains:{domain:string;primary:boolean}[];plan:string;subscriptionStatus:string;currency:string;timezone:string};
 type Overview={stats:{tenants:number;activeTenants:number;suspendedTenants:number;branches:number;activeSubscriptions:number};tenants:Tenant[]};
 const labels:Record<string,string>={active:"نشط",suspended:"موقوف",pending:"قيد الإعداد",trial:"تجريبي",cancelled:"ملغي",expired:"منتهي",none:"بدون اشتراك"};
