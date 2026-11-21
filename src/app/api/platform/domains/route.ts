@@ -2,8 +2,9 @@ import{NextResponse}from"next/server";
 import{appwriteRequest,verifyPlatformOwner}from"@/lib/platform-auth";
 export const runtime="nodejs";const db=process.env.BADE3_CORE_DATABASE_ID??"";
 type Row={$id:string;data?:Record<string,unknown>}&Record<string,unknown>;
+type DataRow={id:string;tenant_id?:string;domain?:string;is_primary?:boolean;is_verified?:boolean;status?:string;[key:string]:unknown};
 const val=(r:Row)=>r.data&&typeof r.data==="object"?r.data:Object.fromEntries(Object.entries(r).filter(([k])=>!k.startsWith("$")&&k!=="data"));
-async function list(table:string){const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);return(r.rows??[]).map(x=>({id:x.$id,...val(x)}));}
+async function list(table:string):Promise<DataRow[]>{const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${table}/rows?queries[]=${q}`);return(r.rows??[]).map(x=>({id:x.$id,...val(x)} as DataRow));}
 const out=(v:unknown,s=200)=>NextResponse.json(v,{status:s,headers:{"Cache-Control":"no-store"}});
 function origin(r:Request){const x=r.headers.get("origin");return!!x&&x===new URL(r.url).origin;}
 export async function GET(){try{if(!await verifyPlatformOwner())return out({error:"غير مصرح."},401);const[tenants,domains]=await Promise.all([list("tenants"),list("tenant_domains")]);return out({tenants,domains:domains.map(d=>({...d,tenant:tenants.find(t=>t.id===d.tenant_id)}))});}catch{return out({error:"تعذّر تحميل النطاقات."},503)}}
