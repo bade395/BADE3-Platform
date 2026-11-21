@@ -5,8 +5,10 @@ export const runtime="nodejs";
 export const dynamic="force-dynamic";
 type TenantRow={ $id:string; data?:{name?:string;slug?:string;status?:string} } & Record<string,unknown>;
 function encode(value:unknown){return Buffer.from(JSON.stringify(value)).toString("base64url");}
-export async function POST(_request:Request,{params}:{params:Promise<{id:string}>}){
+export async function POST(request:Request,{params}:{params:Promise<{id:string}>}){
  try{
+  const origin=request.headers.get("origin");
+  if(!origin||origin!==new URL(request.url).origin)return NextResponse.json({error:"طلب غير مسموح."},{status:403});
   const actor=await verifyPlatformOwner();
   if(!actor)return NextResponse.json({error:"غير مصرح."},{status:401});
   const {id}=await params;
@@ -14,6 +16,7 @@ export async function POST(_request:Request,{params}:{params:Promise<{id:string}
   const db=process.env.BADE3_CORE_DATABASE_ID??"";
   const row=await appwriteRequest<TenantRow>(`/tablesdb/${encodeURIComponent(db)}/tables/tenants/rows/${encodeURIComponent(id)}`);
   const tenant=row.data??row as unknown as {name?:string;slug?:string;status?:string};
+  if(tenant.slug!=="bella-roses")return NextResponse.json({error:"تطبيق هذا العميل غير مربوط بعد."},{status:409});
   if(tenant.status!=="active")return NextResponse.json({error:"لا يمكن فتح شركة غير نشطة."},{status:409});
   const secret=process.env.BADE3_SUPPORT_SIGNING_SECRET;
   if(!secret||secret.length<48)return NextResponse.json({error:"خدمة الدخول الإداري غير مهيأة."},{status:503});
