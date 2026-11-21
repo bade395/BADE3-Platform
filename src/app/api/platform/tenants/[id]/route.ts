@@ -3,7 +3,7 @@ import { appwriteRequest, verifyPlatformOwner } from "@/lib/platform-auth";
 export const runtime = "nodejs";
 const db = process.env.BADE3_CORE_DATABASE_ID ?? "";
 type Row = { $id:string; data?:Record<string,unknown> } & Record<string,unknown>;
-async function read(table:string){
+async function read(table:string):Promise<Array<Record<string,unknown>&{id:string}>>{
  const q=encodeURIComponent(JSON.stringify({method:"limit",values:[500]}));
  const r=await appwriteRequest<{rows?:Row[]}>(`/tablesdb/${encodeURIComponent(db)}/tables/${encodeURIComponent(table)}/rows?queries[]=${q}`);
  return (r.rows??[]).map(x=>({id:x.$id,...(x.data??Object.fromEntries(Object.entries(x).filter(([k])=>!k.startsWith("$")&&k!=="data")))}));
