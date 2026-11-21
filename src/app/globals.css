@@ -1,5 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-:root{color-scheme:dark;--bg:#080b14;--panel:#101625;--panel2:#151d30;--line:rgba(255,255,255,.09);--muted:#9ca9c2;--text:#f4f5f8;--gold:#d6b574;--gold2:#f1d8a5;--blue:#6479ff;--glow:rgba(214,181,116,.13}
+:root{color-scheme:dark;--bg:#080b14;--panel:#101625;--panel2:#151d30;--line:rgba(255,255,255,.09);--muted:#9ca9c2;--text:#f4f5f8;--gold:#d6b574;--gold2:#f1d8a5;--blue:#6479ff;--glow:rgba(214,181,116,.13)}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
 body{margin:0;background:radial-gradient(ellipse at 75% -15%,#24314e 0,transparent 38%),radial-gradient(ellipse at 12% 15%,#1a2339 0,transparent 28%),var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',Manrope,Arial,sans-serif;min-height:100vh}
