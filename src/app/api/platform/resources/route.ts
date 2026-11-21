@@ -34,7 +34,7 @@ export async function POST(request: Request) {
       if (name.length < 2 || name.length > 128 || !/^[a-z0-9][a-z0-9_-]{1,62}[a-z0-9]$/.test(code) || !Number.isFinite(price) || price < 0 || !Number.isInteger(limit) || limit < 1) return bad("بيانات الباقة غير صالحة.");
       const all = await list(table);
       if (all.some(r => String(clean(r).code ?? "").toLowerCase() === code)) return bad("كود الباقة مستخدم بالفعل.", 409);
-      data = { name, code, price_monthly: price, branch_limit: limit, is_active: true };
+      data = { name, code, price_monthly: price, branch_limit: limit, is_active: true, ...(typeof body.price_yearly === "number" && body.price_yearly >= 0 ? { price_yearly: body.price_yearly } : {}), ...(typeof body.description === "string" ? { description: body.description.slice(0, 2000) } : {}), ...(typeof body.features === "string" ? { features: body.features.slice(0, 5000) } : {}), ...(typeof body.terms === "string" ? { terms: body.terms.slice(0, 5000) } : {}) };
     } else if (table === "branches") {
       const tenant_id = typeof body.tenant_id === "string" ? body.tenant_id.trim() : "";
       const name = typeof body.name === "string" ? body.name.trim() : "";
@@ -78,7 +78,7 @@ export async function PATCH(request: Request) {
       if (body.name !== undefined) { if (typeof body.name !== "string" || body.name.trim().length < 2 || body.name.trim().length > 128) return bad("اسم الباقة غير صالح."); data.name = body.name.trim(); }
       if (body.price_monthly !== undefined) { const n = Number(body.price_monthly); if (!Number.isFinite(n) || n < 0) return bad("السعر غير صالح."); data.price_monthly = n; }
       if (body.branch_limit !== undefined) { const n = Number(body.branch_limit); if (!Number.isInteger(n) || n < 1) return bad("حد الفروع غير صالح."); data.branch_limit = n; }
-      if (body.is_active !== undefined) { if (typeof body.is_active !== "boolean") return bad("حالة الباقة غير صالحة."); data.is_active = body.is_active; }
+      if (body.is_active !== undefined) { if (typeof body.is_active !== "boolean") return bad("حالة الباقة غير صالحة."); data.is_active = body.is_active; }\n      if (body.price_yearly !== undefined) { const n = Number(body.price_yearly); if (!Number.isFinite(n) || n < 0) return bad("السعر السنوي غير صالح."); data.price_yearly = n; }\n      for (const key of ["description", "features", "terms"] as const) if (body[key] !== undefined) { if (typeof body[key] !== "string" || body[key].length > 5000) return bad("تفاصيل الباقة غير صالحة."); data[key] = body[key]; }
     } else if (table === "branches") {
       if (body.name !== undefined) { if (typeof body.name !== "string" || body.name.trim().length < 2 || body.name.trim().length > 128) return bad("اسم الفرع غير صالح."); data.name = body.name.trim(); }
       if (body.status !== undefined) { if (!["active", "inactive", "suspended"].includes(String(body.status))) return bad("حالة الفرع غير صالحة."); data.status = body.status; }
