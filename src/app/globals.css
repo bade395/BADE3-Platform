@@ -114,3 +114,16 @@ td small{display:block;color:#8c9ab2;font-size:11px;margin-top:5px;direction:ltr
 @keyframes heroFloat{0%,100%{transform:perspective(1100px) rotateY(-7deg) rotateX(2deg) translateY(0)}50%{transform:perspective(1100px) rotateY(-7deg) rotateX(2deg) translateY(-10px)}}
 @media(max-width:900px){.home-hero{grid-template-columns:1fr;padding-top:55px}.hero-visual{min-height:300px}.home-capabilities{padding-bottom:45px}.home-showcase{grid-template-columns:1fr}.auth-shell-premium{grid-template-columns:1fr}.auth-story{min-height:330px;max-width:700px;width:100%;margin:auto}.auth-story-overlay h2{font-size:clamp(34px,8vw,52px)}}
 @media(max-width:600px){.bade3-home{padding:0 16px}.home-hero{padding:40px 0}.hero-visual{min-height:250px}.hero-proof{gap:12px;margin-top:26px}.home-capabilities{grid-template-columns:1fr}.home-showcase{padding:16px}.home-footer{flex-direction:column;text-align:center}.home-login{padding:10px 13px;font-size:12px}.auth-story{min-height:280px}.auth-story-overlay{padding:20px}.auth-story-overlay .story-bottom{gap:10px}.auth-logo img{width:150px}}
+
+.dash-brand img{width:160px;height:62px;object-fit:contain;object-position:right}
+.dash-brand p{margin:4px 0}
+.activity-overview{display:grid;grid-template-columns:1.4fr .8fr;gap:16px;margin:26px 0}
+.activity-panel{border:1px solid var(--line);border-radius:18px;padding:24px;background:linear-gradient(145deg,rgba(20,28,45,.9),rgba(12,17,29,.85))}
+.activity-panel h2{font-size:21px;margin:12px 0}
+.activity-panel p{font-size:13px;line-height:1.9}
+.activity-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:24px}
+.activity-metrics div{padding:16px;border:1px solid rgba(255,255,255,.07);border-radius:13px;background:rgba(255,255,255,.025)}
+.activity-metrics small,.activity-metrics em{display:block;color:var(--muted);font-size:11px;font-style:normal}
+.activity-metrics strong{display:block;font:700 30px Manrope;color:var(--gold2);margin:8px 0}
+.insight-panel ul{color:#aab4c8;font-size:13px;line-height:2.1;padding-right:20px}
+@media(max-width:850px){.activity-overview{grid-template-columns:1fr}}
